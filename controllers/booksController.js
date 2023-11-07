@@ -1,4 +1,18 @@
 const booksModel = require('../models/bookModel');
+const initialData = require('../data/initialData');
+
+const getAllBooks = async (request, response) => {
+    try {
+        const books = await booksModel.find()
+        if (books.length === 0) {
+            const initialBook = await booksModel.insertMany(initialData);
+        }
+        response.status(201).json(books)
+    }
+    catch (error) {
+        response.status(500).json({ message: error.message });
+    }
+}
 
 const addNewBook = async (request, response) => {
     const newBook = request.body;
@@ -11,10 +25,10 @@ const addNewBook = async (request, response) => {
         }
         const insertedBook = await booksModel.create(newBook)
         return response.status(201).json(insertedBook);
-    } 
+    }
     catch (error) {
-        response.send(500).json({message: error.message});
+        response.send(500).json({ message: error.message });
     }
 }
 
-module.exports = {addNewBook}
+module.exports = { addNewBook, getAllBooks }
